@@ -1,0 +1,46 @@
+{
+    "name": "thebachtiarz/laravel-announcement-v1",
+    "description": "An Announcement Manager for Laravel Project v1",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "thebachtiarz",
+        "announcement"
+    ],
+    "support": {
+        "issues": "https://github.com/thebachtiarz/laravel-announcement-v1/issues",
+        "source": "https://github.com/thebachtiarz/laravel-announcement-v1"
+    },
+    "authors": [
+        {
+            "name": "thebachtiarz",
+            "email": "bachtiarptibinlppnri2417@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "laravel/framework": "^8.12",
+        "thebachtiarz/laravel-toolkit-v1": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "TheBachtiarz\\Announcement\\": "src/"
+        },
+        "files": [
+            "helper/helper.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TheBachtiarz\\Announcement\\AnnouncementServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
