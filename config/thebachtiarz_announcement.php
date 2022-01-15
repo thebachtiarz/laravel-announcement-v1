@@ -19,5 +19,17 @@ return [
     | Define server url prefix for announcement domain.
     |
     */
-    'announcement_prefix' => "XfIrfTAnPNx"
+    'domain_prefix' => "XfIrfTAnPNx",
+
+    /*
+    |--------------------------------------------------------------------------
+    | Owner Announcement code
+    |--------------------------------------------------------------------------
+    |
+    | Define owner code for announcement.
+    |
+    | ! this config is mutable !
+    |
+    */
+    'owner_code' => "",
 ];

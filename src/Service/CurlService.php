@@ -3,7 +3,7 @@
 namespace TheBachtiarz\Announcement\Service;
 
 use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Support\Facades\Http as CURL;
+use Illuminate\Support\Facades\{Http as CURL, Log};
 use TheBachtiarz\Announcement\Interfaces\UrlDomainInterface;
 use TheBachtiarz\Toolkit\Helper\App\Converter\ArrayHelper;
 
@@ -54,6 +54,8 @@ class CurlService
             $result['status'] = $_result['status'] === "success";
             $result['message'] = $_result['message'];
         } catch (\Throwable $th) {
+            Log::channel('error')->warning($th->getMessage());
+
             $result['message'] = $th->getMessage();
         } finally {
             return $result;
@@ -93,11 +95,11 @@ class CurlService
     {
         $_baseDomain = self::baseDomainResolver(tbannconfig('secure_url'));
 
-        $_prefix = tbannconfig('announcement_prefix');
+        $_prefix = tbannconfig('domain_prefix');
 
         $_endPoint = UrlDomainInterface::URL_DOMAIN_TRANSACTION_AVAILABLE[self::$url];
 
-        return "{$_baseDomain}{$_prefix}{$_endPoint}";
+        return "{$_baseDomain}{$_prefix}/{$_endPoint}";
     }
 
     /**
