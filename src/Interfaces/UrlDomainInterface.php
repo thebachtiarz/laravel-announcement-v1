@@ -20,8 +20,8 @@ class UrlDomainInterface
         self::URL_DOMAIN_ANNOUNCEMENT_RESTORE_NAME => self::URL_DOMAIN_ANNOUNCEMENT_RESTORE_PATH
     ];
 
-    public const URL_DOMAIN_BASE_SECURE = "https://announcement.thebachtiarz.com/";
-    public const URL_DOMAIN_BASE_UNSECURE = "http://announcement.thebachtiarz.com/";
+    public const URL_DOMAIN_BASE_SECURE = "https://announcement.thebachtiarz.com";
+    public const URL_DOMAIN_BASE_UNSECURE = "http://announcement.thebachtiarz.com";
 
     public const URL_DOMAIN_OWNER_CREATE_NAME = "owner-create";
     public const URL_DOMAIN_OWNER_INFO_NAME = "owner-info";

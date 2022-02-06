@@ -3,9 +3,13 @@
 namespace TheBachtiarz\Announcement\Service;
 
 use TheBachtiarz\Announcement\Interfaces\{ConfigInterface, UrlDomainInterface};
+use TheBachtiarz\Announcement\Traits\CurlBodyResolverTrait;
+use TheBachtiarz\Toolkit\Helper\App\Response\DataResponse;
 
 class AnnouncementCurlService
 {
+    use CurlBodyResolverTrait, DataResponse;
+
     /**
      * get announcement(s) list
      *
@@ -14,12 +18,17 @@ class AnnouncementCurlService
      */
     public static function list(bool $withDeleted = false): array
     {
+        $ownerResolver = self::ownerCodeResolve();
+
+        if (!$ownerResolver['status'])
+            return self::errorResponse($ownerResolver['message']);
+
         $_body = [
-            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME)
+            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data']
         ];
 
         if ($withDeleted)
-            $_body = array_merge($_body, ['with_deleted' => '1']);
+            $_body = array_merge($_body, [ConfigInterface::ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME => '1']);
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_LIST_NAME)->setData($_body)->post();
     }
@@ -33,13 +42,18 @@ class AnnouncementCurlService
      */
     public static function detail(string $announcementCode, bool $withDeleted = false): array
     {
+        $ownerResolver = self::ownerCodeResolve();
+
+        if (!$ownerResolver['status'])
+            return self::errorResponse($ownerResolver['message']);
+
         $_body = [
-            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME),
-            'announcement_code' => $announcementCode
+            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data'],
+            ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME => $announcementCode
         ];
 
         if ($withDeleted)
-            $_body = array_merge($_body, ['with_deleted' => '1']);
+            $_body = array_merge($_body, [ConfigInterface::ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME => '1']);
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_DETAIL_NAME)->setData($_body)->post();
     }
@@ -52,9 +66,14 @@ class AnnouncementCurlService
      */
     public static function create(string $announcementData): array
     {
+        $ownerResolver = self::ownerCodeResolve();
+
+        if (!$ownerResolver['status'])
+            return self::errorResponse($ownerResolver['message']);
+
         $_body = [
-            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME),
-            'announcement_data' => $announcementData
+            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data'],
+            ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_DATA_NAME => $announcementData
         ];
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_CREATE_NAME)->setData($_body)->post();
@@ -70,14 +89,19 @@ class AnnouncementCurlService
      */
     public static function update(string $announcementCode, string $announcementData, bool $withDeleted = false): array
     {
+        $ownerResolver = self::ownerCodeResolve();
+
+        if (!$ownerResolver['status'])
+            return self::errorResponse($ownerResolver['message']);
+
         $_body = [
-            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME),
-            'announcement_code' => $announcementCode,
-            'announcement_data' => $announcementData
+            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data'],
+            ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME => $announcementCode,
+            ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_DATA_NAME => $announcementData
         ];
 
         if ($withDeleted)
-            $_body = array_merge($_body, ['with_deleted' => '1']);
+            $_body = array_merge($_body, [ConfigInterface::ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME => '1']);
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_UPDATE_NAME)->setData($_body)->post();
     }
@@ -90,9 +114,14 @@ class AnnouncementCurlService
      */
     public static function delete(string $announcementCode): array
     {
+        $ownerResolver = self::ownerCodeResolve();
+
+        if (!$ownerResolver['status'])
+            return self::errorResponse($ownerResolver['message']);
+
         $_body = [
-            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME),
-            'announcement_code' => $announcementCode
+            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data'],
+            ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME => $announcementCode
         ];
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_DELETE_NAME)->setData($_body)->post();
@@ -106,9 +135,14 @@ class AnnouncementCurlService
      */
     public static function restore(string $announcementCode): array
     {
+        $ownerResolver = self::ownerCodeResolve();
+
+        if (!$ownerResolver['status'])
+            return self::errorResponse($ownerResolver['message']);
+
         $_body = [
-            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME),
-            'announcement_code' => $announcementCode
+            ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data'],
+            ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME => $announcementCode
         ];
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_RESTORE_NAME)->setData($_body)->post();

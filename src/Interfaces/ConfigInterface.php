@@ -9,4 +9,7 @@ interface ConfigInterface
     public const ANNOUNCEMENT_CONFIG_PREFIX_NAME = "announcement";
 
     public const ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME = "owner_code";
+    public const ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME = "announcement_code";
+    public const ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_DATA_NAME = "announcement_data";
+    public const ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME = "with_deleted";
 }
