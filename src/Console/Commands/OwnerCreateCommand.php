@@ -13,7 +13,7 @@ use TheBachtiarz\Toolkit\Helper\App\Log\ErrorLogTrait;
 
 class OwnerCreateCommand extends Command
 {
-    use ConfirmableTrait, ConfigHelper, ErrorLogTrait;
+    use ConfirmableTrait, ErrorLogTrait;
 
     /**
      * The name and signature of the console command.
@@ -116,7 +116,7 @@ class OwnerCreateCommand extends Command
 
             $this->proposedOwnerCode = $generateOwnerCode['data']['owner_code'];
 
-            $updateConfigFile = self::setConfigName(ConfigInterface::ANNOUNCEMENT_CONFIG_NAME)
+            $updateConfigFile = ConfigHelper::setConfigName(ConfigInterface::ANNOUNCEMENT_CONFIG_NAME)
                 ->updateConfigFile(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME, $this->proposedOwnerCode);
 
             throw_if(!$updateConfigFile, 'Exception', "Failed to update config owner code file");

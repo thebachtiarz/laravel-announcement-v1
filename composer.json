@@ -3,7 +3,7 @@
     "description": "An Announcement Manager for Laravel Project v1",
     "type": "library",
     "license": "MIT",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "keywords": [
         "laravel",
         "thebachtiarz",
@@ -39,6 +39,7 @@
             ]
         }
     },
+    "homepage": "https://github.com/thebachtiarz/laravel-announcement-v1",
     "config": {
         "sort-packages": true
     },
