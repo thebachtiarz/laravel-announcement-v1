@@ -27,9 +27,9 @@ trait CurlBodyResolverTrait
         $result = ['status' => false, 'data' => null, 'message' => ''];
 
         try {
-            throw_if(!tbannconfig('is_multi_owner') && (!self::$ownerCode), 'Exception', "Owner code required");
+            throw_if(tbannconfig('is_multi_owner') && !self::$ownerCode, 'Exception', "Owner code required");
 
-            $ownerCode = !tbannconfig('is_multi_owner')
+            $ownerCode = tbannconfig('is_multi_owner')
                 ? self::$ownerCode
                 : tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME);
 
