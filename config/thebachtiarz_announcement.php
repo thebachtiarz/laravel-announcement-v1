@@ -42,4 +42,14 @@ return [
     |
     */
     'owner_code' => "",
+
+    /*
+    |--------------------------------------------------------------------------
+    | Encrypt Announcement Message
+    |--------------------------------------------------------------------------
+    |
+    | Use encryption (Laravel's default encryption) for announcement message.
+    |
+    */
+    'encrypt_message' => false,
 ];

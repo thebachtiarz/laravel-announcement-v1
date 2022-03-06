@@ -5,11 +5,17 @@ namespace TheBachtiarz\Announcement\Service;
 use TheBachtiarz\Announcement\Interfaces\ConfigInterface;
 use TheBachtiarz\Toolkit\Cache\Service\Cache;
 use TheBachtiarz\Toolkit\Helper\App\Converter\ArrayHelper;
+use TheBachtiarz\Toolkit\Helper\App\Encryptor\EncryptorHelper;
 use TheBachtiarz\Toolkit\Helper\App\Log\ErrorLogTrait;
 
 class AnnouncementCacheService
 {
-    use ErrorLogTrait, ArrayHelper;
+    use ErrorLogTrait, ArrayHelper, EncryptorHelper;
+
+    /**
+     * default time to life announcement cache data: 1 Hour
+     */
+    public const ANNOUNCEMENT_CACHE_TTL_DEFAULT = 3600;
 
     /**
      * announcements
@@ -36,22 +42,28 @@ class AnnouncementCacheService
     /**
      * get announcements data
      *
+     * @param boolean $withDeleted return with deleted announcement(s)
      * @return array
      */
-    public static function getAnnouncements(): array
+    public static function getAnnouncements(bool $withDeleted = false): array
     {
         try {
-            if (Cache::has(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME))
-                return Cache::get(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME);
+            if (Cache::has(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME)) {
+                $_announcements = Cache::get(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME);
+            } else {
+                $_announcements = AnnouncementCurlService::list();
+                throw_if(!$_announcements['status'], 'Exception', $_announcements['message']);
 
-            $_announcements = AnnouncementCurlService::list(true);
-            throw_if(!$_announcements['status'], 'Exception', $_announcements['message']);
+                $_announcements = self::announcementDataMap($_announcements['data']);
 
-            $_announcements = self::announcementDataMap($_announcements['data']);
+                Cache::setTemporary(
+                    ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
+                    $_announcements,
+                    self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                );
+            }
 
-            Cache::set(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME, $_announcements);
-
-            return $_announcements;
+            return self::announcementDeletedResolver($_announcements, $withDeleted);
         } catch (\Throwable $th) {
             self::logCatch($th);
 
@@ -67,7 +79,7 @@ class AnnouncementCacheService
     public static function createAnnouncement(): array
     {
         try {
-            $_create = AnnouncementCurlService::create(self::jsonEncode(self::$announcement));
+            $_create = AnnouncementCurlService::create(self::encryptMessageResolver());
             throw_if(!$_create['status'], 'Exception', $_create['message']);
 
             self::createOrUpdateCacheData(self::announcementMap($_create['data']));
@@ -94,7 +106,7 @@ class AnnouncementCacheService
     public static function updateAnnouncement(): array
     {
         try {
-            $_update = AnnouncementCurlService::update(self::$announcementCode, self::jsonEncode(self::$announcement), true);
+            $_update = AnnouncementCurlService::update(self::$announcementCode, self::encryptMessageResolver());
             throw_if(!$_update['status'], 'Exception', $_update['message']);
 
             self::createOrUpdateCacheData(self::announcementMap($_update['data']));
@@ -124,7 +136,7 @@ class AnnouncementCacheService
             $_delete = AnnouncementCurlService::delete(self::$announcementCode);
             throw_if(!$_delete['status'], 'Exception', $_delete['message']);
 
-            self::updateIsDeletedAnnouncement("delete");
+            self::createOrUpdateCacheData(self::announcementMap($_delete['data']));
 
             return [
                 'status' => $_delete['status'],
@@ -151,7 +163,7 @@ class AnnouncementCacheService
             $_restore = AnnouncementCurlService::restore(self::$announcementCode);
             throw_if(!$_restore['status'], 'Exception', $_restore['message']);
 
-            self::updateIsDeletedAnnouncement("restore");
+            self::createOrUpdateCacheData(self::announcementMap($_restore['data']));
 
             return [
                 'status' => $_restore['status'],
@@ -169,6 +181,54 @@ class AnnouncementCacheService
 
     // ? Private Methods
     /**
+     * message encryptor resolver
+     *
+     * @return string
+     */
+    private static function encryptMessageResolver(): string
+    {
+        return tbannconfig('encrypt_message')
+            ? self::simpleEncrypt(self::$announcement)
+            : self::jsonEncode(self::$announcement);
+    }
+
+    /**
+     * message decryptor resolver
+     *
+     * @param string $message
+     * @return array
+     */
+    private static function decryptMessageResolver(string $message): array
+    {
+        return tbannconfig('encrypt_message')
+            ? self::decrypt($message)
+            : self::jsonDecode($message);
+    }
+
+    /**
+     * announcement deleted resolver.
+     * filter is deleted.
+     *
+     * @param array $announcements
+     * @param boolean $withDeleted
+     * @return array
+     */
+    private static function announcementDeletedResolver(array $announcements, bool $withDeleted = false): array
+    {
+        $_announcementFiltered = [];
+
+        if (!$withDeleted) {
+            foreach ($announcements as $key => $announcement)
+                if (!$announcement['is_deleted'])
+                    $_announcementFiltered[] = $announcement;
+
+            $announcements = $_announcementFiltered;
+        }
+
+        return $announcements;
+    }
+
+    /**
      * announcement map
      *
      * @param array $announcement
@@ -177,7 +237,7 @@ class AnnouncementCacheService
     private static function announcementMap(array $announcement): array
     {
         try {
-            $announcement['announcement'] = self::jsonDecode($announcement['announcement']);
+            $announcement['announcement'] = self::decryptMessageResolver($announcement['announcement']);
 
             return $announcement;
         } catch (\Throwable $th) {
@@ -223,28 +283,15 @@ class AnnouncementCacheService
 
                 $_isNewAnnouncement = true;
 
-                if (self::$announcementCode) {
-                    foreach ($_announcements as $key => $_announcement) {
-                        /**
-                         * check update announcement by code
-                         */
+                foreach ($_announcements as $key => $_announcement) {
+                    /**
+                     * check update announcement by code
+                     */
 
-                        if ($_announcement['code'] === $announcementValue['code']) {
-                            $_announcements[$key] = $announcementValue;
-                            $_isNewAnnouncement = false;
-                            break;
-                        }
-                    }
-
-                    if (!$_isNewAnnouncement) {
-                        /**
-                         * will update announcement by code
-                         */
-
-                        Cache::set(
-                            ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
-                            $_announcements
-                        );
+                    if ($_announcement['code'] === $announcementValue['code']) {
+                        $_announcements[$key] = $announcementValue;
+                        $_isNewAnnouncement = false;
+                        break;
                     }
                 }
 
@@ -253,9 +300,20 @@ class AnnouncementCacheService
                      * will create new announcement
                      */
 
-                    Cache::set(
+                    Cache::setTemporary(
                         ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
-                        array_merge($_announcements, [$announcementValue])
+                        array_merge($_announcements, [$announcementValue]),
+                        self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                    );
+                } else {
+                    /**
+                     * will update announcement by code
+                     */
+
+                    Cache::setTemporary(
+                        ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
+                        $_announcements,
+                        self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
                     );
                 }
             } else {
@@ -263,7 +321,11 @@ class AnnouncementCacheService
                  * will create fresh announcement data
                  */
 
-                Cache::set(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME, [$announcementValue]);
+                Cache::setTemporary(
+                    ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
+                    [$announcementValue],
+                    self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                );
             }
         } catch (\Throwable $th) {
         }
@@ -276,7 +338,7 @@ class AnnouncementCacheService
      * @param string $type
      * @return void
      */
-    public static function updateIsDeletedAnnouncement(string $type = "delete"): void
+    private static function updateIsDeletedAnnouncement(string $type = "delete"): void
     {
         try {
             $_announcements = self::getAnnouncements();
@@ -290,7 +352,11 @@ class AnnouncementCacheService
                 }
             }
 
-            Cache::set(ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME, $_announcements);
+            Cache::setTemporary(
+                ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
+                $_announcements,
+                self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+            );
         } catch (\Throwable $th) {
         }
     }

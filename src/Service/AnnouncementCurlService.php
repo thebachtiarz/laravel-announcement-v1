@@ -13,10 +13,9 @@ class AnnouncementCurlService
     /**
      * get announcement(s) list
      *
-     * @param boolean $withDeleted default: false
      * @return array
      */
-    public static function list(bool $withDeleted = false): array
+    public static function list(): array
     {
         $ownerResolver = self::ownerCodeResolve();
 
@@ -27,9 +26,6 @@ class AnnouncementCurlService
             ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data']
         ];
 
-        if ($withDeleted)
-            $_body = array_merge($_body, [ConfigInterface::ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME => '1']);
-
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_LIST_NAME)->setData($_body)->post();
     }
 
@@ -37,10 +33,9 @@ class AnnouncementCurlService
      * get announcement detail announcement code
      *
      * @param string $announcementCode
-     * @param boolean $withDeleted default: false
      * @return array
      */
-    public static function detail(string $announcementCode, bool $withDeleted = false): array
+    public static function detail(string $announcementCode): array
     {
         $ownerResolver = self::ownerCodeResolve();
 
@@ -51,9 +46,6 @@ class AnnouncementCurlService
             ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME => $ownerResolver['data'],
             ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME => $announcementCode
         ];
-
-        if ($withDeleted)
-            $_body = array_merge($_body, [ConfigInterface::ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME => '1']);
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_DETAIL_NAME)->setData($_body)->post();
     }
@@ -84,10 +76,9 @@ class AnnouncementCurlService
      *
      * @param string $announcementCode
      * @param string $announcementData
-     * @param boolean $withDeleted default: false
      * @return array
      */
-    public static function update(string $announcementCode, string $announcementData, bool $withDeleted = false): array
+    public static function update(string $announcementCode, string $announcementData): array
     {
         $ownerResolver = self::ownerCodeResolve();
 
@@ -99,9 +90,6 @@ class AnnouncementCurlService
             ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_CODE_NAME => $announcementCode,
             ConfigInterface::ANNOUNCEMENT_CONFIG_ANNOUNCEMENT_DATA_NAME => $announcementData
         ];
-
-        if ($withDeleted)
-            $_body = array_merge($_body, [ConfigInterface::ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME => '1']);
 
         return CurlService::setUrl(UrlDomainInterface::URL_DOMAIN_ANNOUNCEMENT_UPDATE_NAME)->setData($_body)->post();
     }
