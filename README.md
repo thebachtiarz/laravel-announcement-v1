@@ -4,7 +4,8 @@
 -------
 
 ## Requires
-- [thebachtiarz/laravel-toolkit-v1](https://github.com/thebachtiarz/laravel-toolkit-v1/)
+- [laravel/framework](https://github.com/laravel/framework/) v9.x
+- [thebachtiarz/laravel-toolkit-v1](https://github.com/thebachtiarz/laravel-toolkit-v1/) v2.x
 
 ## Installation
 - composer config (only if you have access)
@@ -14,11 +15,12 @@ composer config repositories.thebachtiarz/laravel-announcement-v1 git git@github
 
 - install repository
 ```bash
-Laravel 9:
-composer require thebachtiarz/laravel-announcement-v1:^2.0
+composer require thebachtiarz/laravel-announcement-v1
+```
 
-Laravel 8:
-composer require thebachtiarz/laravel-announcement-v1:^1.1
+- vendor publish
+``` bash
+php artisan vendor:publish --provider="TheBachtiarz\Announcement\AnnouncementServiceProvider"
 ```
 
 - register the REST API into -> **app/Providers/RouteServiceProvider.php**

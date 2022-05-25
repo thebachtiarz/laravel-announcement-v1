@@ -3,23 +3,44 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Secure URL
+    | API URL Production
     |--------------------------------------------------------------------------
     |
-    | Use secure url for announcement domain.
+    | API URL Production site.
     |
     */
-    'secure_url' => true,
+    'api_url_production' => "https://announcement.thebachtiarz.com",
 
     /*
     |--------------------------------------------------------------------------
-    | Announcement Url Server Prefix
+    | API URL Sandbox
     |--------------------------------------------------------------------------
     |
-    | Define server url prefix for announcement domain.
+    | API URL Sandbox site.
     |
     */
-    'domain_prefix' => "XfIrfTAnPNx",
+    'api_url_sandbox' => "http://appannouncement.test",
+
+    /*
+    |--------------------------------------------------------------------------
+    | Url Prefix
+    |--------------------------------------------------------------------------
+    |
+    | Set url prefix.
+    |
+    */
+    'api_url_prefix' => "XfIrfTAnPNx",
+
+    /*
+    |--------------------------------------------------------------------------
+    | Warehouse Mode
+    |--------------------------------------------------------------------------
+    |
+    | Set mode of warehouse project.
+    |
+    */
+    'is_production_mode' => true,
+
 
     /*
     |--------------------------------------------------------------------------
