@@ -9,7 +9,7 @@ use TheBachtiarz\Announcement\Service\OwnerCurlService;
 class AnnouncementControler extends Controller
 {
     /**
-     * get owner announcement information
+     * Get owner announcement information
      *
      * @return Response
      */

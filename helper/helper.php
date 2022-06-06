@@ -3,12 +3,12 @@
 use TheBachtiarz\Announcement\Interfaces\ConfigInterface;
 
 /**
- * thebachtiarz announcement config
+ * TheBachtiarz announcement config
  *
  * @param string|null $keyName config key name | null will return all
  * @return mixed|null
  */
-function tbannconfig(?string $keyName = null)
+function tbannconfig(?string $keyName = null): mixed
 {
     $configName = ConfigInterface::ANNOUNCEMENT_CONFIG_NAME;
 
@@ -18,7 +18,7 @@ function tbannconfig(?string $keyName = null)
 }
 
 /**
- * thebachtiarz announcement route api file location
+ * TheBachtiarz announcement route api file location
  *
  * @return string
  */

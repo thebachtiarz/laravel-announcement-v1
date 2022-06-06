@@ -11,7 +11,7 @@ class AnnouncementCurlService
     use CurlBodyResolverTrait, DataResponse;
 
     /**
-     * get announcement(s) list
+     * Get announcement(s) list
      *
      * @return array
      */
@@ -30,7 +30,7 @@ class AnnouncementCurlService
     }
 
     /**
-     * get announcement detail announcement code
+     * Get announcement detail announcement code
      *
      * @param string $announcementCode
      * @return array
@@ -51,7 +51,7 @@ class AnnouncementCurlService
     }
 
     /**
-     * create new announcement
+     * Create new announcement
      *
      * @param string $announcementData
      * @return array
@@ -72,7 +72,7 @@ class AnnouncementCurlService
     }
 
     /**
-     * update announcement announcement code
+     * Update announcement announcement code
      *
      * @param string $announcementCode
      * @param string $announcementData
@@ -95,7 +95,7 @@ class AnnouncementCurlService
     }
 
     /**
-     * delete announcement announcement code
+     * Delete announcement announcement code
      *
      * @param string $announcementCode
      * @return array
@@ -116,7 +116,7 @@ class AnnouncementCurlService
     }
 
     /**
-     * restore announcement announcement code
+     * Restore announcement announcement code
      *
      * @param string $announcementCode
      * @return array

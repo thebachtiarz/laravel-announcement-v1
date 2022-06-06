@@ -14,4 +14,6 @@ interface ConfigInterface
     public const ANNOUNCEMENT_CONFIG_WITH_DELETED_NAME = "with_deleted";
 
     public const ANNOUNCEMENT_CACHE_PREFIX_NAME = "LaNcMrH";
+
+    public const ANNOUNCEMENT_CACHE_TTL_DEFAULT = 3600;
 }

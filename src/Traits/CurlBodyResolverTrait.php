@@ -10,15 +10,15 @@ use TheBachtiarz\Announcement\Interfaces\ConfigInterface;
 trait CurlBodyResolverTrait
 {
     /**
-     * owner code
+     * Owner code
      *
-     * @var ?string
+     * @var string|null
      */
     protected static ?string $ownerCode = null;
 
     // ? Private Methods
     /**
-     * resolve owner code for body curl process
+     * Resolve owner code for body curl process
      *
      * @return array
      */

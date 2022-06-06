@@ -70,7 +70,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Use encryption (Laravel's default encryption) for announcement message.
+    | We recommend using the encryption feature for privacy.
     |
     */
-    'encrypt_message' => false,
+    'encrypt_message' => true,
 ];

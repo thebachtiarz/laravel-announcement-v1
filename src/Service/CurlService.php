@@ -10,7 +10,7 @@ class CurlService
     use CurlRestService;
 
     /**
-     * base domain resolver
+     * Base domain resolver
      *
      * @override
      * @param boolean $productionMode
@@ -22,7 +22,7 @@ class CurlService
     }
 
     /**
-     * url end point resolver
+     * Url end point resolver
      *
      * @override
      * @return string

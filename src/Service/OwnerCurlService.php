@@ -11,7 +11,7 @@ class OwnerCurlService
     use CurlBodyResolverTrait, DataResponse;
 
     /**
-     * create new owner announcement
+     * Create new owner announcement
      *
      * @return array
      */
@@ -21,7 +21,7 @@ class OwnerCurlService
     }
 
     /**
-     * get information about owner announcement
+     * Get information about owner announcement
      *
      * @return array
      */

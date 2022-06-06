@@ -59,7 +59,7 @@ class OwnerCreateCommand extends Command
             die;
         }
 
-        $currentOwnerCode = tbannconfig('owner_code');
+        $currentOwnerCode = tbannconfig(ConfigInterface::ANNOUNCEMENT_CONFIG_OWNER_CODE_NAME);
 
         try {
             if (iconv_strlen($currentOwnerCode)) {

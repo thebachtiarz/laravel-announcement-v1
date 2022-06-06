@@ -9,7 +9,7 @@ use TheBachtiarz\Announcement\Interfaces\ConfigInterface;
 class AnnouncementServiceProvider extends ServiceProvider
 {
     /**
-     * register module announcement
+     * Register module announcement
      *
      * @return void
      */
@@ -23,7 +23,7 @@ class AnnouncementServiceProvider extends ServiceProvider
     }
 
     /**
-     * boot module announcement
+     * Boot module announcement
      *
      * @return void
      */

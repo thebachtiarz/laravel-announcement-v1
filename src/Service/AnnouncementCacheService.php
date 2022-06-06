@@ -13,26 +13,21 @@ class AnnouncementCacheService
     use ErrorLogTrait, ArrayHelper, EncryptorHelper;
 
     /**
-     * default time to life announcement cache data: 1 Hour
-     */
-    public const ANNOUNCEMENT_CACHE_TTL_DEFAULT = 3600;
-
-    /**
-     * announcements
+     * Announcements
      *
      * @var array
      */
     protected static array $announcements;
 
     /**
-     * announcement
+     * Announcement
      *
      * @var array
      */
     protected static array $announcement;
 
     /**
-     * announcement code
+     * Announcement code
      *
      * @var string|null
      */
@@ -40,7 +35,7 @@ class AnnouncementCacheService
 
     // ? Public Methods
     /**
-     * get announcements data
+     * Get announcements data
      *
      * @param boolean $withDeleted return with deleted announcement(s)
      * @return array
@@ -59,7 +54,7 @@ class AnnouncementCacheService
                 Cache::setTemporary(
                     ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
                     $_announcements,
-                    self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                    ConfigInterface::ANNOUNCEMENT_CACHE_TTL_DEFAULT
                 );
             }
 
@@ -72,7 +67,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * create new announcement
+     * Create new announcement
      *
      * @return array
      */
@@ -99,7 +94,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * update announcement
+     * Update announcement
      *
      * @return array
      */
@@ -126,7 +121,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * delete announcement
+     * Delete announcement
      *
      * @return array
      */
@@ -153,7 +148,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * restore deleted announcement
+     * Restore deleted announcement
      *
      * @return array
      */
@@ -181,7 +176,7 @@ class AnnouncementCacheService
 
     // ? Private Methods
     /**
-     * message encryptor resolver
+     * Message encryptor resolver
      *
      * @return string
      */
@@ -193,7 +188,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * message decryptor resolver
+     * Message decryptor resolver
      *
      * @param string $message
      * @return array
@@ -206,8 +201,8 @@ class AnnouncementCacheService
     }
 
     /**
-     * announcement deleted resolver.
-     * filter is deleted.
+     * Announcement deleted resolver.
+     * Filter is deleted.
      *
      * @param array $announcements
      * @param boolean $withDeleted
@@ -229,7 +224,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * announcement map
+     * Announcement map
      *
      * @param array $announcement
      * @return array
@@ -246,7 +241,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * announcement data map
+     * Announcement data map
      *
      * @param array $announcements
      * @return array
@@ -266,7 +261,7 @@ class AnnouncementCacheService
     }
 
     /**
-     * create or update cache data
+     * Create or update cache data
      *
      * @param array $announcementValue
      * @return void
@@ -303,7 +298,7 @@ class AnnouncementCacheService
                     Cache::setTemporary(
                         ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
                         array_merge($_announcements, [$announcementValue]),
-                        self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                        ConfigInterface::ANNOUNCEMENT_CACHE_TTL_DEFAULT
                     );
                 } else {
                     /**
@@ -313,7 +308,7 @@ class AnnouncementCacheService
                     Cache::setTemporary(
                         ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
                         $_announcements,
-                        self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                        ConfigInterface::ANNOUNCEMENT_CACHE_TTL_DEFAULT
                     );
                 }
             } else {
@@ -324,7 +319,7 @@ class AnnouncementCacheService
                 Cache::setTemporary(
                     ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
                     [$announcementValue],
-                    self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                    ConfigInterface::ANNOUNCEMENT_CACHE_TTL_DEFAULT
                 );
             }
         } catch (\Throwable $th) {
@@ -332,8 +327,8 @@ class AnnouncementCacheService
     }
 
     /**
-     * update is deleted announcement.
-     * re arrange deleted announcement.
+     * Update is deleted announcement.
+     * Re-arrange deleted announcement.
      *
      * @param string $type
      * @return void
@@ -355,7 +350,7 @@ class AnnouncementCacheService
             Cache::setTemporary(
                 ConfigInterface::ANNOUNCEMENT_CACHE_PREFIX_NAME,
                 $_announcements,
-                self::ANNOUNCEMENT_CACHE_TTL_DEFAULT
+                ConfigInterface::ANNOUNCEMENT_CACHE_TTL_DEFAULT
             );
         } catch (\Throwable $th) {
         }
