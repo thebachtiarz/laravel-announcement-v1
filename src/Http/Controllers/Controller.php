@@ -1,6 +1,6 @@
 <?php
 
-namespace TheBachtiarz\Announcement\Controllers;
+namespace TheBachtiarz\Announcement\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;

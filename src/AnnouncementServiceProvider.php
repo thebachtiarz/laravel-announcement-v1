@@ -3,7 +3,6 @@
 namespace TheBachtiarz\Announcement;
 
 use Illuminate\Support\ServiceProvider;
-use TheBachtiarz\Announcement\Console\Commands\OwnerCreateCommand;
 use TheBachtiarz\Announcement\Interfaces\ConfigInterface;
 
 class AnnouncementServiceProvider extends ServiceProvider
@@ -15,9 +14,11 @@ class AnnouncementServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        (new ConfigRegistration)->register();
+
         if ($this->app->runningInConsole()) {
             $this->commands([
-                OwnerCreateCommand::class
+                \TheBachtiarz\Announcement\Console\Commands\OwnerCreateCommand::class
             ]);
         }
     }
