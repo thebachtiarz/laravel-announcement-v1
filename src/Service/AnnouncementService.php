@@ -121,7 +121,7 @@ class AnnouncementService
 
             self::setAnnouncementCodeAuth($_newAnnouncement['data']['code']);
 
-            self::announcementCacheMutator(self::announcementDecryptMap($_newAnnouncement['data']));
+            self::announcementCacheMutator($_newAnnouncement['data']);
 
             return self::responseData(
                 self::announcementDecryptMap($_newAnnouncement['data']),
@@ -149,7 +149,7 @@ class AnnouncementService
 
             throw_if(!$_updateAnnouncement['status'], 'Exception', $_updateAnnouncement['message']);
 
-            self::announcementCacheMutator(self::announcementDecryptMap($_updateAnnouncement['data']));
+            self::announcementCacheMutator($_updateAnnouncement['data']);
 
             return self::responseData(
                 self::announcementDecryptMap($_updateAnnouncement['data']),
@@ -177,7 +177,7 @@ class AnnouncementService
 
             throw_if(!$_deleteAnnouncement['status'], 'Exception', $_deleteAnnouncement['message']);
 
-            self::announcementCacheMutator(self::announcementDecryptMap($_deleteAnnouncement['data']), true);
+            self::announcementCacheMutator($_deleteAnnouncement['data'], true);
 
             return self::responseData(
                 self::announcementDecryptMap($_deleteAnnouncement['data']),
@@ -205,7 +205,7 @@ class AnnouncementService
 
             throw_if(!$_restoreAnnouncement['status'], 'Exception', $_restoreAnnouncement['message']);
 
-            self::announcementCacheMutator(self::announcementDecryptMap($_restoreAnnouncement['data']), true, false);
+            self::announcementCacheMutator($_restoreAnnouncement['data'], true, false);
 
             return self::responseData(
                 self::announcementDecryptMap($_restoreAnnouncement['data']),
@@ -222,10 +222,11 @@ class AnnouncementService
      * Get announcement global data.
      * From cache or curl.
      *
+     * @param boolean $needDecrypt
      * @return array
      * @throws \Throwable
      */
-    private static function getAnnouncementData(): array
+    private static function getAnnouncementData(bool $needDecrypt = true): array
     {
         try {
             $_announcementData = [];
@@ -245,12 +246,12 @@ class AnnouncementService
 
                 throw_if(!$_announcementCurl['status'], 'Exception', $_announcementCurl['message']);
 
-                $_announcementData = self::announcementDataDecryptMap($_announcementCurl['data']);
+                $_announcementData = $_announcementCurl['data'];
 
-                self::setCacheData($_announcementData);
+                self::setCacheData($_announcementCurl['data']);
             }
 
-            return $_announcementData;
+            return $needDecrypt ? self::announcementDataDecryptMap($_announcementData) : $_announcementData;
         } catch (\Throwable $th) {
             self::logCatch($th);
 
@@ -275,7 +276,7 @@ class AnnouncementService
         try {
             throw_if(empty($announcementData), 'Exception', "There is no announcement data");
 
-            $_announcements = self::getAnnouncementData();
+            $_announcements = self::getAnnouncementData(false);
 
             if (count($_announcements)) {
                 /**
@@ -359,6 +360,8 @@ class AnnouncementService
             return true;
         } catch (\Throwable $th) {
             self::logCatch($th);
+
+            return false;
         }
     }
 
@@ -393,7 +396,7 @@ class AnnouncementService
         try {
             $announcement['announcement'] = self::decryptMessage($announcement['announcement']);
             $announcement['created'] = self::dateConvert($announcement['created']);
-            $announcement['updated'] = self::dateConvert($announcement['updated']);
+            $announcement['updated'] = self::dateConvert($announcement['updated'], $announcement['created']);
             $announcement['deleted'] = self::dateConvert($announcement['deleted']);
 
             return $announcement;
@@ -514,15 +517,18 @@ class AnnouncementService
     /**
      * Date convert
      *
-     * @param string|null $date
-     * @return string|null
+     * @param string|null $date Set date
+     * @param string|null $setInterval Set if prefer to get interval
+     * @return string
      */
-    private static function dateConvert(?string $date = null): string
+    private static function dateConvert(?string $date = null, ?string $setInterval = null): string
     {
         try {
             throw_if(!$date, 'Exception', 'Date is null');
 
-            return self::humanDateTime($date);
+            return $setInterval
+                ? self::humanIntervalCreateUpdate($setInterval, $date)
+                : self::humanDateTime($date);
         } catch (\Throwable $th) {
             return '';
         }
