@@ -392,9 +392,9 @@ class AnnouncementService
     {
         try {
             $announcement['announcement'] = self::decryptMessage($announcement['announcement']);
-            $announcement['created'] = self::humanDateTime($announcement['created']);
-            $announcement['updated'] = self::humanDateTime($announcement['updated']);
-            $announcement['deleted'] = self::humanDateTime($announcement['deleted']);
+            $announcement['created'] = self::dateConvert($announcement['created']);
+            $announcement['updated'] = self::dateConvert($announcement['updated']);
+            $announcement['deleted'] = self::dateConvert($announcement['deleted']);
 
             return $announcement;
         } catch (\Throwable $th) {
@@ -508,6 +508,23 @@ class AnnouncementService
             );
         } catch (\Throwable $th) {
             throw $th;
+        }
+    }
+
+    /**
+     * Date convert
+     *
+     * @param string|null $date
+     * @return string|null
+     */
+    private static function dateConvert(?string $date = null): string
+    {
+        try {
+            throw_if(!$date, 'Exception', 'Date is null');
+
+            return self::humanDateTime($date);
+        } catch (\Throwable $th) {
+            return '';
         }
     }
 

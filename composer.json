@@ -3,7 +3,7 @@
     "description": "An Announcement Manager for Laravel Project v1",
     "type": "library",
     "license": "MIT",
-    "version": "2.1.4",
+    "version": "2.1.5",
     "keywords": [
         "laravel",
         "thebachtiarz",
